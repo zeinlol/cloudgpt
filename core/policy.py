@@ -1,38 +1,44 @@
 class Policy:
-    def __init__(self):
-        self.account = None
-        self.arn = None
-        self.name = None
-        self.version = None
-        self.policy = None
-        self.original_document = None
-        self.redacted_document = None
-        self.ai_response = None
-        self.account_mapping = {}
+    def __init__(self,
+                 account=None,
+                 arn=None,
+                 name=None,
+                 version=None,
+                 policy=None,
+                 original_document=None,
+                 redacted_document=None,
+                 ai_response=None
+                 ):
+        self.account = account
+        self.arn = arn
+        self.name = name
+        self.version = version
+        self.policy = policy
+        self.original_document: str | None = original_document
+        self.redacted_document = redacted_document
+        self.ai_response: str | None = ai_response
+        self.account_mapping: dict = {}
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'Policy()'
-    def __str__(self):
+
+    def __str__(self) -> str:
         return f'<Policy name:{self.name}>'
 
-    def map_accounts(self, old, new):
+    def map_accounts(self, old, new) -> None:
         self.account_mapping[old] = new
 
-    def retrieve_mappings(self):
-        maps = []
-        for k,v in self.account_mapping.items():
-            maps.append(f'{k}->{v}')
+    def retrieve_mappings(self) -> str:
+        maps = [f'{k}->{v}' for k, v in self.account_mapping.items()]
         return ', '.join(maps)
 
-    def is_changed(self):
+    def is_changed(self) -> bool:
         return self.original_document != self.redacted_document
 
-    def is_vulnerable(self):
-        vulnerable = 'CHECK CSV'
-        
-        if 'Yes,' in self.ai_response:
-            vulnerable = 'VULNERABLE'
-        elif 'No,' in self.ai_response:
-            vulnerable = 'NOT VULNERABLE'
+    def is_vulnerable(self) -> str:
 
-        return vulnerable
+        if 'Yes,' in self.ai_response:
+            return 'VULNERABLE'
+        elif 'No,' in self.ai_response:
+            return 'NOT VULNERABLE'
+        return 'CHECK CSV'
