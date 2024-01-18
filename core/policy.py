@@ -9,11 +9,11 @@ class Policy:
                  redacted_document=None,
                  ai_response=None
                  ):
-        self.account = account
-        self.arn = arn
-        self.name = name
-        self.version = version
-        self.policy = policy
+        self.account: str = account
+        self.arn: str = arn
+        self.name: str = name
+        self.version: str = version
+        self.policy: str = policy
         self.original_document: str | None = original_document
         self.redacted_document = redacted_document
         self.ai_response: str | None = ai_response
@@ -42,3 +42,17 @@ class Policy:
         elif 'No,' in self.ai_response:
             return 'NOT VULNERABLE'
         return 'CHECK CSV'
+
+    def get_mapping(self):
+        return '' if len(self.retrieve_mappings()) == 0 else self.retrieve_mappings()
+
+    def dict(self) -> dict:
+        return {
+            'account': self.account,
+            'name': self.name,
+            'arn': self.arn,
+            'version': self.version,
+            'policy': self.original_document,
+            'vulnerable': self.ai_response,
+            'mappings': self.get_mapping(),
+        }
