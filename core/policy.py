@@ -35,13 +35,23 @@ class Policy:
     def is_changed(self) -> bool:
         return self.original_document != self.redacted_document
 
-    def is_vulnerable(self) -> str:
+    @property
+    def is_vulnerable(self) -> bool | None:
 
         if 'Yes,' in self.ai_response:
-            return 'VULNERABLE'
+            return True
         elif 'No,' in self.ai_response:
+            return False
+        return None
+
+    @property
+    def is_vulnerable_text(self) -> str:
+        if self.is_vulnerable:
+            return 'VULNERABLE'
+        elif self.is_vulnerable is False:
             return 'NOT VULNERABLE'
-        return 'CHECK CSV'
+        else:
+            return 'CHECK CSV'
 
     def get_mapping(self):
         return '' if len(self.retrieve_mappings()) == 0 else self.retrieve_mappings()
@@ -55,4 +65,5 @@ class Policy:
             'policy': self.original_document,
             'vulnerable': self.ai_response,
             'mappings': self.get_mapping(),
+            'is_vulnerable': self.is_vulnerable,
         }

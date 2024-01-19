@@ -50,7 +50,7 @@ def check_policy(policy):
         presence_penalty=0.0,
         stream=False)
     policy.ai_response = response.choices[0].text.strip()
-    log(f'Policy {policy.name} [{policy.is_vulnerable()}]')
+    log(f'Policy {policy.name} [{policy.is_vulnerable_text}]')
 
     return policy
 
